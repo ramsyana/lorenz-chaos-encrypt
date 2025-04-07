@@ -67,7 +67,7 @@ def lorenz_odes(t, state, a=10.0, b=8/3, r=28.0):
     dw_dt = u * v - b * w
     return [du_dt, dv_dt, dw_dt]
 
-def solve_lorenz(ics, t_span, dt, a=10.0, b=8/3, r=28.0, method='RK45', rtol=1e-6, atol=1e-6):
+def solve_lorenz(ics, t_span, dt, key=None, a=10.0, b=8/3, r=28.0, method='RK45', rtol=1e-6, atol=1e-6):
     """Solve the Lorenz system using solve_ivp.
     
     Args:
