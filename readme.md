@@ -1,8 +1,18 @@
 # Plain Convolution Encryption & Chaos Synchronization (Python Implementation)
 
-This repository contains a Python implementation of the encryption methods discussed in the paper "Plain Convolution Encryption as an Alternative to Overcoming the Limitations of Synchronization-Based Methods". It explores chaos synchronization using the Lorenz system and the proposed Plain Convolution Encryption (PCE) method (both addition and convolution variants).
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-The code aims to replicate the findings of the paper, demonstrating the fidelity and security aspects (particularly against Fourier analysis attacks) of these chaos-based communication techniques.
+A robust Python implementation of chaos-based encryption using the Lorenz system and Plain Convolution Encryption (PCE). This project implements novel cryptographic methods that leverage chaos theory for secure communication, offering both addition and convolution-based encryption variants.
+
+### Key Features
+- 🔐 Chaos-based encryption using Lorenz system synchronization
+- 🔄 Plain Convolution Encryption (PCE) implementation
+- 🛡️ Enhanced security against Fourier analysis attacks
+- 📊 Comprehensive testing and validation suite
+- 📈 Visualization tools for encryption analysis
+
+This repository implements the encryption methods from the paper "Plain Convolution Encryption as an Alternative to Overcoming the Limitations of Synchronization-Based Methods", demonstrating both theoretical foundations and practical applications in secure communication.
 
 **Paper Reference:**
 
@@ -105,3 +115,6 @@ If you'd like to contribute:
 Ramsyana - ramsyana[at]mac.com
 
 If you're interested in collaborating on the mathematical aspects of chaos theory, cryptography, or related mathematical research within this project, please don't hesitate to reach out. I welcome discussions on theoretical foundations, numerical methods, and mathematical optimizations.
+
+### Topics
+`chaos-theory` `cryptography` `lorenz-system` `encryption` `python` `mathematical-modeling` `secure-communication` `chaos-synchronization` `numerical-methods` `scientific-computing`
