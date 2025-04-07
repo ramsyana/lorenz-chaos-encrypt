@@ -1,12 +1,52 @@
 """Lorenz system simulation module.
 
 Implements functions for solving the Lorenz system ODEs and handling
-the receiver system for chaos synchronization.
+the receiver system for chaos synchronization and PCE encryption.
+
+For PCE (Perfect Chaotic Encryption), both sender and receiver must generate
+exactly the same chaotic signal using identical parameters and solver settings.
 """
 
 import numpy as np
+from dataclasses import dataclass
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
+
+@dataclass
+class PCEKey:
+    """Encapsulates parameters needed for exact chaotic signal reproduction in PCE.
+    
+    Both sender and receiver must use identical PCEKey instances to generate
+    the same chaotic carrier signal for encryption/decryption.
+    """
+    ics: np.ndarray  # Initial conditions [u0, v0, w0]
+    a: float = 10.0  # First Lorenz parameter
+    b: float = 8/3   # Second Lorenz parameter
+    r: float = 28.0  # Third Lorenz parameter
+    method: str = 'RK45'  # Integration method
+    rtol: float = 1e-6    # Relative tolerance
+    atol: float = 1e-6    # Absolute tolerance
+    
+    def __post_init__(self):
+        """Validate and convert parameters."""
+        # Convert and validate initial conditions
+        self.ics = np.array(self.ics, dtype=float)
+        if self.ics.shape != (3,):
+            raise ValueError("Initial conditions must be a 3D vector [u0, v0, w0]")
+            
+        # Validate solver method
+        valid_methods = {'RK45', 'RK23', 'DOP853', 'Radau', 'BDF', 'LSODA'}
+        if self.method not in valid_methods:
+            raise ValueError(f"Invalid solver method. Must be one of: {valid_methods}")
+            
+        # Validate tolerances
+        if self.rtol <= 0 or self.atol <= 0:
+            raise ValueError("Tolerances must be positive")
+            
+        # Validate Lorenz parameters
+        if self.a <= 0 or self.b <= 0 or self.r <= 0:
+            raise ValueError("Lorenz parameters must be positive")
+
 
 def lorenz_odes(t, state, a=10.0, b=8/3, r=28.0):
     """Define the Lorenz system ODEs.
@@ -27,20 +67,34 @@ def lorenz_odes(t, state, a=10.0, b=8/3, r=28.0):
     dw_dt = u * v - b * w
     return [du_dt, dv_dt, dw_dt]
 
-def solve_lorenz(ics, t_span, dt, a=10.0, b=8/3, r=28.0):
+def solve_lorenz(t_span, dt, key=None, ics=None, a=10.0, b=8/3, r=28.0, method='RK45', rtol=1e-6, atol=1e-6):
     """Solve the Lorenz system using solve_ivp.
     
     Args:
-        ics (array-like): Initial conditions [u0, v0, w0].
         t_span (tuple): Time span for integration (t_start, t_end).
         dt (float): Time step for output points.
+        key (PCEKey, optional): PCE key containing all parameters. If provided,
+            other parameter arguments are ignored.
+        ics (array-like, optional): Initial conditions [u0, v0, w0]. Not used if key is provided.
         a (float, optional): First Lorenz parameter. Defaults to 10.0.
         b (float, optional): Second Lorenz parameter. Defaults to 8/3.
         r (float, optional): Third Lorenz parameter. Defaults to 28.0.
+        method (str, optional): Integration method. Defaults to 'RK45'.
+        rtol (float, optional): Relative tolerance. Defaults to 1e-6.
+        atol (float, optional): Absolute tolerance. Defaults to 1e-6.
     
     Returns:
         tuple: (t, sol) where t is time array and sol is solution array (3, len(t)).
     """
+    # Use parameters from key if provided, otherwise use individual arguments
+    if key is not None:
+        ics = key.ics
+        a, b, r = key.a, key.b, key.r
+        method = key.method
+        rtol, atol = key.rtol, key.atol
+    elif ics is None:
+        raise ValueError("Must provide either key or ics")
+    
     t_eval = np.arange(t_span[0], t_span[1], dt)
     sol = solve_ivp(
         lorenz_odes,
@@ -48,9 +102,9 @@ def solve_lorenz(ics, t_span, dt, a=10.0, b=8/3, r=28.0):
         ics,
         args=(a, b, r),
         t_eval=t_eval,
-        method='RK45',
-        rtol=1e-6,
-        atol=1e-6
+        method=method,
+        rtol=rtol,
+        atol=atol
     )
     return sol.t, sol.y
 
