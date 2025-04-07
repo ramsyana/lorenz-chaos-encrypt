@@ -59,5 +59,8 @@ coverage.xml
 local_settings.py
 db.sqlite3
 
+# Generated files
+*.png
+
 # Internal documentation
 internal-docs/

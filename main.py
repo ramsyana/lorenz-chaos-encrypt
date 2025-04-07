@@ -24,7 +24,7 @@ w_co = 35              # Hacking cutoff frequency
 t = np.arange(t_span[0], t_span[1], dt)
 
 # Generate Lorenz signal (emitter)
-t_lorenz, sol = solve_lorenz(u0, t_span, dt, a, b, r)
+t_lorenz, sol = solve_lorenz(ics=u0, t_span=t_span, dt=dt, a=a, b=b, r=r)
 u_signal = sol[0]  # u component
 
 # Generate message signals

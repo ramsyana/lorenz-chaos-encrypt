@@ -92,20 +92,19 @@ def solve_lorenz(ics, t_span, dt, key=None, a=10.0, b=8/3, r=28.0, method='RK45'
         a, b, r = key.a, key.b, key.r
         method = key.method
         rtol, atol = key.rtol, key.atol
-    elif ics is None:
-        raise ValueError("Must provide either key or ics")
     
     t_eval = np.arange(t_span[0], t_span[1], dt)
     sol = solve_ivp(
         lorenz_odes,
-        t_span,
-        ics,
-        args=(a, b, r),
+        t_span=t_span,
+        y0=ics,
         t_eval=t_eval,
+        args=(a, b, r),
         method=method,
         rtol=rtol,
         atol=atol
     )
+    
     return sol.t, sol.y
 
 def lorenz_receiver_odes(t, state_r, me_signal_interp, a=10.0, b=8/3, r=28.0):
