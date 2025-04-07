@@ -35,7 +35,7 @@ A `requirements.txt` file is included for easy installation of dependencies.
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/ramsyana/lorenz-chaos-encrypt.git
-    cd YOUR_REPOSITORY_NAME
+    cd lorenz-chaos-encrypt
     ```
 
 2.  **Create and activate a virtual environment (recommended):**
